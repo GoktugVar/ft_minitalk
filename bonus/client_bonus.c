@@ -6,7 +6,7 @@
 /*   By: ivar <ivar@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 13:11:02 by ivar              #+#    #+#             */
-/*   Updated: 2025/02/04 13:27:54 by ivar             ###   ########.fr       */
+/*   Updated: 2025/02/04 13:52:48 by ivar             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 static volatile int	g_signal_received = 0;
 
-static void handle_signal(int sig)
+static void	handle_signal(int sig)
 {
 	if (sig == SIGUSR2)
 		write(1, "Transmission successfully received.\n", 37);
