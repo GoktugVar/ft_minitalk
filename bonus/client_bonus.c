@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivar <ivar@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 15:59:46 by ivar              #+#    #+#             */
-/*   Updated: 2025/02/03 16:08:14 by ivar             ###   ########.fr       */
+/*   Created: 2025/02/04 13:11:02 by ivar              #+#    #+#             */
+/*   Updated: 2025/02/04 13:11:03 by ivar             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minitalk.h"
+#include "../include/minitalk.h"
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static volatile int	g_signal_received = 0;
 
@@ -41,7 +42,8 @@ static void	send_bit(int pid, char bit)
 
 static void	handle_signal(int sig)
 {
-	(void)sig;
+	if (sig == SIGUSR2)
+		write(1, "Transmission successfully received.\n", 37);
 	g_signal_received = 1;
 }
 

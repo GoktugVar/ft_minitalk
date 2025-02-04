@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivar <ivar@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 15:08:55 by ivar              #+#    #+#             */
-/*   Updated: 2025/02/03 16:00:00 by ivar             ###   ########.fr       */
+/*   Created: 2025/02/04 13:11:06 by ivar              #+#    #+#             */
+/*   Updated: 2025/02/04 13:11:07 by ivar             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minitalk.h"
+#include "../include/minitalk.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -46,13 +46,14 @@ static void	append_to_message(char *message, unsigned char ch)
 	}
 }
 
-static void	output_message_and_cleanup(char **message, size_t *length)
+static void	output_message_and_cleanup(char **str, size_t *len, siginfo_t *info)
 {
-	write(1, *message, *length);
-	*length = 0;
-	free(*message);
-	*message = NULL;
+	write(1, *str, *len);
+	*len = 0;
+	free(*str);
+	*str = NULL;
 	g_len_status = 0;
+	kill(info->si_pid, SIGUSR2);
 }
 
 static void	signal_handler(int sig, siginfo_t *info, void *ucontext)
@@ -77,9 +78,10 @@ static void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 		current_char = 0;
 		bit_position = 0;
 	}
-	kill(info->si_pid, SIGUSR1);
 	if (g_len_status == 2)
-		output_message_and_cleanup(&message, &message_length);
+		output_message_and_cleanup(&message, &message_length, info);
+	else
+		kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)

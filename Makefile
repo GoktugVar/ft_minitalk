@@ -1,50 +1,39 @@
-CLIENT = client
-SERVER = server
+NAME                = minitalk
+CLIENT              = client
+SERVER              = server
+CLIENT_BONUS        = client_bonus
+SERVER_BONUS        = server_bonus
 
-CC = gcc
-CFLAGS = -Wall -Werror -Wextra
-RM = rm -rf
+CLIENT_SRC          = mandatory/client.c mandatory/utils.c
+SERVER_SRC          = mandatory/server.c mandatory/utils.c
+CLIENT_BONUS_SRC    = bonus/client_bonus.c bonus/utils_bonus.c
+SERVER_BONUS_SRC    = bonus/server_bonus.c bonus/utils_bonus.c
 
-SRCDIR = src
-CLIENTC_BASE = $(SRCDIR)/utils.c $(SRCDIR)/client.c
-SERVERC_BASE = $(SRCDIR)/utils.c $(SRCDIR)/server.c
-CLIENTC_BONUS = $(SRCDIR)/utils.c $(SRCDIR)/client_bonus.c
-SERVERC_BONUS = $(SRCDIR)/utils.c $(SRCDIR)/server_bonus.c
+RM                  = rm -rf
+CC                  = gcc
+CFLAGS              = -Wall -Wextra -Werror
 
-ifeq ($(filter bonus,$(MAKECMDGOALS)),)
-    CLIENTC = $(CLIENTC_BASE)
-    SERVERC = $(SERVERC_BASE)
-else
-    CLIENTC = $(CLIENTC_BONUS)
-    SERVERC = $(SERVERC_BONUS)
-endif
+all: $(CLIENT) $(SERVER)
 
-CLIENTO = $(CLIENTC:.c=.o)
-SERVERO = $(SERVERC:.c=.o)
+$(CLIENT): $(CLIENT_SRC)
+	$(CC) $(CFLAGS) $^ -o $@
 
-ALLO = $(CLIENTC_BASE:.c=.o) $(SERVERC_BASE:.c=.o) \
-       $(CLIENTC_BONUS:.c=.o) $(SERVERC_BONUS:.c=.o)
+$(SERVER): $(SERVER_SRC)
+	$(CC) $(CFLAGS) $^ -o $@
 
+bonus: $(CLIENT_BONUS) $(SERVER_BONUS)
 
-all: $(SERVER) $(CLIENT)
+$(CLIENT_BONUS): $(CLIENT_BONUS_SRC)
+	$(CC) $(CFLAGS) $^ -o $@
 
-bonus: $(SERVER) $(CLIENT)
-
-$(SERVER): $(SERVERO)
-	$(CC) $(CFLAGS) $(SERVERO) -o $(SERVER)
-
-$(CLIENT): $(CLIENTO)
-	$(CC) $(CFLAGS) $(CLIENTO) -o $(CLIENT)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(SERVER_BONUS): $(SERVER_BONUS_SRC)
+	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
-	$(RM) $(ALLO)
+	$(RM) $(CLIENT) $(SERVER) $(CLIENT_BONUS) $(SERVER_BONUS)
 
 fclean: clean
-	$(RM) $(SERVER) $(CLIENT)
 
 re: fclean all
 
-.PHONY: all bonus clean fclean re
+.PHONY: all clean fclean re bonus

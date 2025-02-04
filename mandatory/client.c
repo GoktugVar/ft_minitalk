@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client_bonus.c                                     :+:      :+:    :+:   */
+/*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ivar <ivar@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 15:08:53 by ivar              #+#    #+#             */
-/*   Updated: 2025/02/03 15:59:57 by ivar             ###   ########.fr       */
+/*   Created: 2025/02/04 13:11:11 by ivar              #+#    #+#             */
+/*   Updated: 2025/02/04 13:12:22 by ivar             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minitalk.h"
+#include "../include/minitalk.h"
 #include <signal.h>
 #include <stdlib.h>
-#include <unistd.h>
 
-static volatile int	g_signal_received = 0;
+static volatile sig_atomic_t	g_signal_received = 0;
+
+static void	handle_signal(int sig)
+{
+	(void)sig;
+	g_signal_received = 1;
+}
 
 static void	send_bit(int pid, char bit)
 {
@@ -38,14 +43,6 @@ static void	send_bit(int pid, char bit)
 			;
 		g_signal_received = 0;
 	}
-}
-
-static void	handle_signal(int sig)
-{
-	if (sig == SIGUSR1)
-		g_signal_received = 1;
-	else if (sig == SIGUSR2)
-		write(1, "Transmission successfully received.\n", 37);
 }
 
 static void	send_message_length(int pid, const char *message)
@@ -91,5 +88,4 @@ int	main(int argc, char **argv)
 		ft_error("Error: Failed to set up SIGUSR2 handler\n");
 	send_message_length(pid, argv[2]);
 	send_full_message(pid, argv[2]);
-	return (0);
 }
