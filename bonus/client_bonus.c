@@ -6,7 +6,7 @@
 /*   By: ivar <ivar@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 13:11:02 by ivar              #+#    #+#             */
-/*   Updated: 2025/02/04 13:11:03 by ivar             ###   ########.fr       */
+/*   Updated: 2025/02/04 13:27:54 by ivar             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@
 #include <unistd.h>
 
 static volatile int	g_signal_received = 0;
+
+static void handle_signal(int sig)
+{
+	if (sig == SIGUSR2)
+		write(1, "Transmission successfully received.\n", 37);
+	g_signal_received = 1;
+}
 
 static void	send_bit(int pid, char bit)
 {
@@ -35,16 +42,9 @@ static void	send_bit(int pid, char bit)
 				ft_error("Error: Failed to send SIGUSR1 signal\n");
 		}
 		while (!g_signal_received)
-			;
+			pause();
 		g_signal_received = 0;
 	}
-}
-
-static void	handle_signal(int sig)
-{
-	if (sig == SIGUSR2)
-		write(1, "Transmission successfully received.\n", 37);
-	g_signal_received = 1;
 }
 
 static void	send_message_length(int pid, const char *message)

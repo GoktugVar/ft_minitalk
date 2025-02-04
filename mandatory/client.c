@@ -6,13 +6,14 @@
 /*   By: ivar <ivar@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 13:11:11 by ivar              #+#    #+#             */
-/*   Updated: 2025/02/04 13:12:22 by ivar             ###   ########.fr       */
+/*   Updated: 2025/02/04 13:18:35 by ivar             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minitalk.h"
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static volatile sig_atomic_t	g_signal_received = 0;
 
@@ -40,7 +41,7 @@ static void	send_bit(int pid, char bit)
 				ft_error("Error: Failed to send SIGUSR1 signal\n");
 		}
 		while (!g_signal_received)
-			;
+			pause();
 		g_signal_received = 0;
 	}
 }
